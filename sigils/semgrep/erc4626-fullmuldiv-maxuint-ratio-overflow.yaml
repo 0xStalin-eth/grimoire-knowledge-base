@@ -1,0 +1,33 @@
+rules:
+  - id: erc4626-fullmuldiv-maxuint-ratio-overflow
+    message: >
+      fullMulDiv receives type(uint256).max (or a maxMint/maxDeposit return value) as its first
+      argument without a guard for numerator >= denominator. After any fee-share minting event
+      inflates the numerator above the denominator, fullMulDiv reverts permanently, DoSing
+      Vault.mint() and violating ERC-4626 maxMint MUST NOT revert (§4.9).
+      Fix: add `if (numerator >= denominator) return type(uint256).max;` before the fullMulDiv call.
+    languages: [solidity]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: CWE-190
+      confidence: MEDIUM
+      likelihood: HIGH
+      impact: HIGH
+      subcategory: [vuln]
+      tags: [erc4626, dos, arithmetic-overflow, fullmuldiv, fee-dilution]
+      references:
+        - https://eips.ethereum.org/EIPS/eip-4626
+        - https://github.com/code-423n4/2024-03-revert-lend-findings/issues/249
+    pattern-either:
+      - pattern: fullMulDiv(type(uint256).max, ...)
+      - patterns:
+          - pattern: |
+              $X = $SILO.maxMint(...);
+              ...
+              fullMulDiv($X, ...)
+      - patterns:
+          - pattern: |
+              $X = $SILO.maxDeposit(...);
+              ...
+              fullMulDiv($X, ...)
