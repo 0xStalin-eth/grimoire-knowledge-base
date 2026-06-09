@@ -6,7 +6,8 @@ severity-default: high
 confidence: medium
 tools: [Grep, Read]
 tags: [erc4626, dos, bootstrap, recovery-path, accounting-before-interaction]
-attribution-name: T3tris Vault Cyfrin Audit 2026
+attribution-name: T3tris Vault Cyfrin Audit 2026 / Silo Finance Code4rena Mar 2025 M-06
+attribution-url: https://code4rena.com/reports/2025-03-silo-finance
 ---
 
 ## Patterns

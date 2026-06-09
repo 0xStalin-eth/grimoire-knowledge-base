@@ -1,12 +1,12 @@
 ---
 name: erc4626-fullmuldiv-maxuint-ratio-overflow
-description: Detects ERC-4626 mint/maxMint paths that scale type(uint256).max via fullMulDiv without guarding for numerator > denominator, causing permanent DoS when fee shares inflate the ratio.
+description: Detects ERC-4626 mint/maxMint paths that scale type(uint256).max via fullMulDiv without guarding for numerator > denominator, causing permanent DoS when any divergence (fee minting, rounding recovery, PnL extraction, or first-deposit PPS mismatch) inflates the numerator above the denominator.
 languages: solidity
 severity-default: high
 confidence: medium
 tools: [Grep, Read]
 tags: [erc4626, dos, fullmuldiv, arithmetic-overflow, maxmint, fee-dilution]
-attribution-name: Revert Lend Code4rena 2024 M-14
+attribution-name: Revert Lend Code4rena 2024 M-14 / Sherlock new-scope 2024 #431 / T3tris Vault Cyfrin Audit 2026
 attribution-url: https://github.com/code-423n4/2024-03-revert-lend-findings/issues/249
 ---
 
@@ -22,7 +22,7 @@ attribution-url: https://github.com/code-423n4/2024-03-revert-lend-findings/issu
 
 ## Assessment
 
-**Confirming exploitability:** Read the fee-accrual and settlement logic. Verify there is a path (fee minting, interest accrual, rebasing, or any share-inflation event) that increases `totalSupply` (or the numerator variable) without proportionally increasing the denominator variable (e.g., `ownedSyncSiloShares`, tracked strategy shares). When `numerator > denominator`, `fullMulDiv(type(uint256).max, numerator, denominator)` requires a 512-bit intermediate that overflows 256 bits and reverts with `FullMulDivFailed` (`0xae47f702`), permanently DoSing `mint()` and `maxMint()` in violation of ERC-4626 §4.9.
+**Confirming exploitability:** Read the fee-accrual, settlement, and deposit logic. Verify any path that causes `numerator > denominator`: (a) fee minting inflates `totalSupply` without touching the strategy-share denominator; (b) deposit rounding where the sub-vault mints 0 shares for a non-zero asset amount (recovery path), crediting vault shares with no denominator increase; (c) PnL extraction (`_safeWithdraw` / `claimSilosPnl`) burns strategy shares, shrinking the denominator while `totalSupply` stays fixed; (d) **fresh-vault / external-silo PPS mismatch**: when a new vault's first deposit is issued at 1:1 (standard ERC-4626 zero-supply behavior) but the sub-silo has an established PPS above 1:1 from external deposits, the silo mints fewer shares than the vault issues — creating structural divergence from the very first deposit, with no adversarial actor. When `numerator > denominator`, `fullMulDiv(type(uint256).max, numerator, denominator)` overflows 256 bits and reverts with `FullMulDivFailed` (`0xae47f702`), permanently DoSing `mint()` and `maxMint()` in violation of ERC-4626 §4.9.
 
 **Severity adjustments:**
 - **High:** Overflow is reachable through normal protocol operation (e.g., automatic fee accrual on any deposit/withdraw) with no admin action required, and it permanently bricks `mint()` or `maxMint()`.

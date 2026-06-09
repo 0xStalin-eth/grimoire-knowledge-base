@@ -8,7 +8,7 @@ tools: [Grep, Read]
 tags: [erc4626, async-vault, epoch, share-accounting, stale-state, migration]
 attribution-name: Perennial BalancedVault Sherlock 2023 #45 + T3tris Vault Cyfrin Audit 2026
 attribution-url: https://github.com/sherlock-audit/2023-05-perennial-judging/issues/45
-related-checks: unchecked-claim-accumulator-subtraction
+related-checks: [unchecked-claim-accumulator-subtraction, async-vault-donation-bridges-inflated-silo-claim]
 ---
 
 ## Patterns

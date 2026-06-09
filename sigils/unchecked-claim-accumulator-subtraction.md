@@ -6,9 +6,9 @@ severity-default: high
 confidence: low
 tools: [Grep, Read]
 tags: [erc4626, async-vault, unchecked, share-accounting, underflow, migration]
-attribution-name: OWASP SC-02 / Perennial V2 Sherlock 2024 #26
+attribution-name: OWASP SC-02 / Perennial V2 Sherlock 2024 #26 / T3tris Vault Cyfrin Audit 2026
 attribution-url: https://github.com/sherlock-audit/2024-02-perennial-v2-3-judging/issues/26
-related-checks: async-vault-epoch-reset-stale-claim
+related-checks: [async-vault-epoch-reset-stale-claim, async-vault-donation-bridges-inflated-silo-claim]
 ---
 
 ## Patterns
