@@ -6,7 +6,7 @@ severity-default: low
 confidence: medium
 tools: [Grep, Read]
 tags: [pausable, yield-accrual, erc4626, emissions, logic-error]
-related-checks: [pausable-accrual-no-sync-on-toggle]
+related-checks: [pausable-accrual-no-sync-on-toggle, oz-pausable-paused-override-expanded-semantics]
 ---
 
 ## Patterns
