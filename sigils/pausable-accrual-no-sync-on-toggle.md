@@ -6,7 +6,7 @@ severity-default: low
 confidence: medium
 tools: [Grep, Read]
 tags: [pause, accrual, state-sync, erc4626, defi, time-based]
-related-checks: [erc4626-live-balance-accrual-base, stale-timestamp-on-mode-transition]
+related-checks: [erc4626-live-balance-accrual-base, stale-timestamp-on-mode-transition, pausable-unpause-accrues-paused-interval]
 ---
 
 Look for contracts that combine pause control with time-based accrual:
